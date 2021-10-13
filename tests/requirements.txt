@@ -1,0 +1,24 @@
+aiodns==3.0.0
+aiohttp==3.7.4.post0
+async-timeout==3.0.1
+attrs==21.2.0
+ccxt==1.58.6
+certifi==2021.10.8
+cffi==1.14.6
+chardet==4.0.0
+charset-normalizer==2.0.7
+cryptography==35.0.0
+idna==3.3
+multidict==5.2.0
+numpy==1.21.2
+pandas==1.3.3
+pycares==4.0.0
+pycparser==2.20
+python-dateutil==2.8.2
+pytz==2021.3
+requests==2.26.0
+six==1.16.0
+typing-extensions==3.10.0.2
+urllib3==1.26.7
+-e git+file:///media/paul/HDD/RemoteRepositories/Libraries/volume_ohlc.git@a2f0b7a37e23546e9af7b730fa34cd718638808d#egg=volume_ohlc_bars
+yarl==1.6.3
