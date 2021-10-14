@@ -64,8 +64,25 @@ class RunBasic:
         return Collect(self.exchange, symbol, timeframe, from_iso, self.batch_size)
 
 
+class RunSqlite:
+    def __init__(self, exchangeid: str, batch_size: int, rate_limit=600):
+        self.exchange = create_exchange(exchangeid, rate_limit)
+        self.batch_size = batch_size
+
+    def collect(self, symbol, timeframe, from_iso, db_filepath, tablename):
+        _collect = Collect(self.exchange, symbol, timeframe, from_iso, self.batch_size)
+        data = _collect.collect_data().transform_data()
+        WriteSql(db_filepath, tablename, data).write()
+        return data
 
 
-# Example Usage
-# df = Configuration('coinbasepro').configure_client('AVAX/USDT', '1h',
-#                                                    '2021-05-01 00:00:00').collect_data().transform_data(1000000)
+class RunCsv:
+    def __init__(self, exchangeid: str, batch_size: int, rate_limit=600):
+        self.exchange = create_exchange(exchangeid, rate_limit)
+        self.batch_size = batch_size
+
+    def collect(self, symbol, timeframe, from_iso, csv_filepath):
+        _collect = Collect(self.exchange, symbol, timeframe, from_iso, self.batch_size)
+        data = _collect.collect_data().transform_data()
+        WriteCsv(csv_filepath, data).write()
+        return data
