@@ -1,4 +1,10 @@
-# Pyth
+# Python VOHLC
+
+Version 0.0.1
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Creates Volume-based candlesticks from time-based ohlcv data retrieved from cryptocurrency exchanges.
 
 - Output can be either sqlite or csv (for version 0.0.1)
 - Primarily just a utility for something that I'm working on
