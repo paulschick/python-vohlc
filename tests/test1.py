@@ -7,7 +7,8 @@ in this way, especially with the chaining, that just gets too big.
 Definitely a program that will take some time to run depending on timeframe and start date.
 """
 import os
-from vohlc.client import RunBasic, RunCsv, RunSqlite
+# from vohlc.client import RunBasic, RunCsv, RunSqlite
+from vohlc import RunBasic, RunCsv, RunSqlite
 
 
 df = RunBasic('coinbasepro', 1000).collect('BTC/USD', '1d', '2021-01-01 00:00:00') \
