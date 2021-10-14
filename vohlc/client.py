@@ -1,4 +1,3 @@
-import os
 import sqlite3 as sql
 import pandas as pd
 from .base.collect_data import create_exchange, run_ohlcvs_collection
@@ -14,64 +13,57 @@ class Persistence(Enum):
 
 
 class Transform:
-    def __init__(self, dataframe: pd.DataFrame, persistence_config: Dict):
+    def __init__(self, dataframe: pd.DataFrame, batch_size: int):
         self.df = dataframe
-        self.pers = persistence_config
+        self.batch = batch_size
 
-    def transform_data(self, batch_size: int) -> pd.DataFrame:
-        df = batch_df(self.df, batch_size)
-        if self.pers['type'].value is Persistence.CSV.value:
-            if self.pers['vohlc_db_path'] is not None:
-                df.to_csv(path_or_buf=self.pers['vohlc_db_path'], index=False)
-            elif self.pers['type'].value is Persistence.SQLITE.value:
-                if self.pers['vohlc_db_path'] is not None:
-                    con = sql.connect(self.pers['vohlc_db_path'])
-                    name = self.pers['sqlite_table2']
-                    df.to_sql(name=name, con=con, index=False)
-                    con.close()
-        return df
+    def transform_data(self) -> pd.DataFrame:
+        return batch_df(self.df, self.batch)
+
+
+class WriteCsv:
+    def __init__(self, filepath: str, dataframe: pd.DataFrame):
+        self.filepath = filepath
+        self.df = dataframe
+
+    def write(self):
+        self.df.to_csv(self.filepath, index=False)
+
+
+class WriteSql:
+    def __init__(self, db_filepath, tablename, data: pd.DataFrame):
+        self.db_file = db_filepath
+        self.table = tablename
+        self.df = data
+
+    def write(self):
+        con = sql.connect(self.db_file)
+        self.df.to_sql(name=self.table, con=con, index=False)
+        con.close()
 
 
 class Collect:
-    def __init__(self, configuration: List, persistance_config: Dict):
-        self.config = configuration
-        self.pers = persistance_config
+    def __init__(self, exchange, symbol, timeframe, from_iso, batch_size):
+        self.exchange = exchange
+        self.symbol = symbol
+        self.timeframe = timeframe
+        self.from_iso = from_iso
+        self.batch_size = batch_size
 
     def collect_data(self) -> Transform:
-        df = run_ohlcvs_collection(*self.config)
-        if self.pers['type'].value is Persistence.CSV.value:
-            if self.pers['initial_data'] is not None:
-                df.to_csv(path_or_buf=self.pers['initial_data'], index=False)
-        elif self.pers['type'].value is Persistence.SQLITE.value:
-            if self.pers['vohlc_db_path'] is not None:
-                con = sql.connect(self.pers['vohlc_db_path'])
-                name = self.pers['sqlite_table1']
-                df.to_sql(name=name, con=con, index=False)
-                con.close()
-        return Transform(df, self.pers)
+        df = run_ohlcvs_collection(self.exchange, self.symbol, self.timeframe, self.from_iso)
+        return Transform(df, self.batch_size)
 
 
-class Configuration:
-    def __init__(self, exchangeid: str, rate_limit=600, initial_data_filepath=None, vohlc_path=None,
-                 persistence_type=Persistence.NONE, initial_db_table=None, vohlc_table=None):
+class RunBasic:
+    def __init__(self, exchangeid: str, batch_size: int, rate_limit=600):
         self.exchange = create_exchange(exchangeid, rate_limit)
-        self.initial_filepath = initial_data_filepath
-        self.vohlc_path = vohlc_path
-        self._configuration = []
-        self._persistence = dict()
-        self._ptype = persistence_type
-        self._table1 = initial_db_table
-        self._table2 = vohlc_table
+        self.batch_size = batch_size
 
-    def configure_client(self, symbol, timeframe, from_iso) -> Collect:
-        """Goes directly into run_ohlcvs_collection"""
-        self._configuration = [self.exchange, symbol, timeframe, from_iso]
-        self._persistence['type'] = self._ptype
-        self._persistence['initial_data'] = self.initial_filepath
-        self._persistence['vohlc_db_path'] = self.vohlc_path
-        self._persistence['sqlite_table1'] = self._table1
-        self._persistence['sqlite_table2'] = self._table2
-        return Collect(self._configuration, self._persistence)
+    def collect(self, symbol, timeframe, from_iso) -> Collect:
+        return Collect(self.exchange, symbol, timeframe, from_iso, self.batch_size)
+
+
 
 
 # Example Usage
