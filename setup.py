@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='volume_ohlc_bars',
+    name='vohlc',
     version='0.0.1',
     description='Create Candlestick data based on volume instead of time',
     url='https://github.com/paulschick/python-vohlc',
