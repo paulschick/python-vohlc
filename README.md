@@ -19,3 +19,5 @@ You may install from source, or install from pypi:
 ```shell
 pip install vohlc
 ```
+
+[View on Pypi](https://pypi.org/project/vohlc/)
