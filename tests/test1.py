@@ -13,8 +13,8 @@ from vohlc.client import RunBasic, RunCsv, RunSqlite
 df = RunBasic('coinbasepro', 1000).collect('BTC/USD', '1d', '2021-01-01 00:00:00') \
     .collect_data().transform_data()
 
-db_path = os.path.join(os.getcwd(), 'data', 'testdata.db')
-csv_path = os.path.join(os.getcwd(), 'data', 'testdata.csv')
+db_path = os.path.join(os.getcwd(), 'data', 'btcusd.db')
+csv_path = os.path.join(os.getcwd(), 'data', 'btcusd.csv')
 
 print(db_path)
 print(csv_path)
