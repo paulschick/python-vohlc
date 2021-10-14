@@ -2,6 +2,9 @@
 .idea/
 tests/data/*
 !tests/data/.gitkeep
+upload_testpy.sh
+upload_package.sh
+resources/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

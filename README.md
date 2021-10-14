@@ -11,3 +11,11 @@ Creates Volume-based candlesticks from time-based ohlcv data retrieved from cryp
 - Should not be very complex. Keep it simple, just do what it needs to do
 - Does not keep the timestamps
 - Potentially give the option to not write the output, just keep in memory
+
+## Installation
+
+You may install from source, or install from pypi:
+
+```shell
+pip install vohlc
+```
